@@ -7,11 +7,11 @@ const clienteController = {
     adicionarCliente: async (req, res) => {
         try {
 
-            const {nome, cpf, data_nasc, genero, estado_civil, email, telefone } = req.body;
+            const { nome, cpf, data_nasc, genero, estado_civil, email, telefone } = req.body;
 
-            const objCliente = new Cliente(null, nome, cpf, data_nasc, genero, estado_civil, email, telefone);
+            const objCliente = new Cliente(null, nome, data_nasc, cpf, genero, estado_civil, email, telefone);
 
-            
+
 
             const result = await insert(objCliente);
             return res.json(result);

@@ -7,7 +7,7 @@ async function insert(cliente) {
         await connection.beginTransaction();
 
         // Insere o cliente, a variável 'res' nos informa qual é o id do cliente para realizar os 'inserts' de endereços e telefones que contém chave estrangeira (FK)
-        const res = await connection.query('INSERT INTO cliente (nome, cpf, data_nasc, genero, estado_civil, email, telefone) VALUES (?, ?, ?, ?, ?, ?, ?)', [cliente.nome, cliente.cpf, cliente.data_nasc, cliente.genero, cliente.estado_civil, cliente.email, cliente.telefone]);
+        const res = await connection.query('INSERT INTO tbl_cliente (nome, cpf, data_nasc, genero, estado_civil, email, telefone) VALUES (?, ?, ?, ?, ?, ?, ?)', [cliente.nome, cliente.cpf, cliente.data_nasc, cliente.genero, cliente.estado_civil, cliente.email, cliente.telefone]);
         console.log('RESULTADO INSERT CLIENTE =>', res);
 
     
