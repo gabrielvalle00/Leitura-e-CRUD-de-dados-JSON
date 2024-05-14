@@ -1,4 +1,4 @@
-const conectarBancoDeDados = require('../config/db');
+const conectarBancoDeDados = require('../../config/db');
 
 async function insert(cliente) {
     const connection = await conectarBancoDeDados();
