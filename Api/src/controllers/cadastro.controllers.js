@@ -8,6 +8,7 @@ const clienteController = {
 
             
             cpfExistente = await verificarCpfExistente(cpf);
+            console.log(cpfExistente);
             if (cpfExistente > 0) {
                 return res.json(`O CPF: ${cpf} já possui cadastro`);
             }

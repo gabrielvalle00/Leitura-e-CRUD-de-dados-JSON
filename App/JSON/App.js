@@ -39,7 +39,7 @@ export default function App() {
     try {
       const resposta = await api.post('/cadastro/novo', dados);
   
-      if (resposta.status === 200) {
+      if (resposta.data === dados) {
         Alert.alert('Dados inseridos no banco de dados com sucesso!');
         setDados(null);
         setErrorMessage(null); 

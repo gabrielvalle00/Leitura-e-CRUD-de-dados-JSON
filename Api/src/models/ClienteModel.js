@@ -29,9 +29,9 @@ async function verificarCpfExistente(cpf) {
     const connection = await conectarBancoDeDados();
     try {
 
-        const res = await connection.query('select count(*) from tbl_cliente where cpf = (?)', [cpf]);
+        const res = await connection.query('select count(*) as total from tbl_cliente where cpf = (?)', [cpf]);
         console.log(res); 
-        return res;
+        return res[0][0].total;
 
 
        
