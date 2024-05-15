@@ -51,7 +51,7 @@ class Cliente {
         let [dia, mes, ano] = value.split('/'); //       19/01/2002
         let dataFormatada = `${ano}-${mes}-${dia}`;
         this.Data_nasc = dataFormatada;
-        // console.log(this.Data_nasc);
+      
     }
 
 

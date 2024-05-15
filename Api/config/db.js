@@ -2,10 +2,7 @@ const mysql2 = require("mysql2/promise");
 
 async function conectarBancoDeDados() {
 
-    if (global.connection && global.connection.state !== 'disconnected') {
-        return global.connection;
-    }
-    const connection = await mysql2.createConnection({
+      const connection = await mysql2.createConnection({
         host: 'localhost',
         port: '3306',
         database: 'Atividade02',

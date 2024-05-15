@@ -4,47 +4,34 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import api from './src/service/api';
 
-
 export default function App() {
-
- 
-
   const [dados, setDados] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const selecionarArquivo = async () => {
     try {
-      // Fornece acesso à UI do sistema para selecionar documentos disponíveis no dispositivo do usuário.
       const resultado = await DocumentPicker.getDocumentAsync();
-      console.log(resultado);
-
-      // Verificar se o usuário cancelou a seleção do arquivo
-      if (resultado.canceled == true) {
+      
+      if (resultado.canceled) {
         console.log('Busca de arquivo cancelada!');
         setDados(null);
         return;
       }
 
-      // Desestruturar o objeto para obter as propriedades desejadas
-      const { assets: [{ mimeType, uri }], canceled } = resultado;
-      console.log(mimeType);
+      const { assets: [{ mimeType, uri }] } = resultado;
       
-      
-      // Verificar se o arquivo é do tipo JSON
       if (mimeType !== 'application/json') {
-        Alert.alert('O arquivo selecionado não é do tipo JSON')
+        setErrorMessage('O arquivo selecionado não é do tipo JSON');
         setDados(null);
-        // console.warn('O arquivo selecionado não é do tipo JSON');
         return;
       }
 
-      // Ler o conteúdo do arquivo
       const conteudo = await FileSystem.readAsStringAsync(uri);
       const dadosJSON = JSON.parse(conteudo);
-      // Atualizar o estado com os dados do arquivo JSON
       setDados(dadosJSON);
-
     } catch (error) {
       console.error('Erro ao selecionar o arquivo:', error);
+      setErrorMessage('Erro ao selecionar o arquivo. Por favor, tente novamente.');
     }
   };
 
@@ -55,14 +42,20 @@ export default function App() {
       if (resposta.status === 200) {
         Alert.alert('Dados inseridos no banco de dados com sucesso!');
         setDados(null);
+        setErrorMessage(null); 
+
       } else {
+
         const errorMessage = await resposta.text();
         console.error('Erro ao inserir dados:', errorMessage);
-        Alert.alert(`Erro ao inserir dados no banco de dados: ${errorMessage}`);
+        setErrorMessage(`Erro ao inserir dados no banco de dados: ${errorMessage}`);
+
       }
     } catch (error) {
+
       console.error('Erro ao inserir dados:', error);
-      Alert.alert('Erro ao inserir dados no banco de dados.');
+      Alert.alert('Erro', 'CPF já possui cadastro!');
+      
     }
   };
 
@@ -70,81 +63,67 @@ export default function App() {
     <View style={styles.container}>
       <View style={styles.containerLargura}>
         <View style={styles.topo}>
-          <Text style={styles.titleConteudo}>Leitura de arquivo JSON com React Native</Text>
+          <Text style={styles.titleConteudo}>Leitura de arquivo JSON</Text>
         </View>
 
         <TouchableOpacity style={styles.button} onPress={selecionarArquivo}>
           <Text style={styles.buttonText}>Selecionar Arquivo</Text>
         </TouchableOpacity>
 
+        {errorMessage && <Text style={styles.errorMessage}>{errorMessage}</Text>}
+
         {dados ? (
           <View>
-            <Text style={styles.titleInfo}>Nome:</Text>
-            <TextInput style={styles.textInput} value={dados.nome} />
-
-            <Text style={styles.titleInfo}>CPF:</Text>
-            <TextInput style={styles.textInput} value={dados.cpf} />
-
-            <Text style={styles.titleInfo}>Gênero:</Text>
-            <TextInput style={styles.textInput} value={dados.genero} />
-
-            <Text style={styles.titleInfo}>Data de Nasc.:</Text>
-            <TextInput style={styles.textInput} value={dados.data_nasc} />
-
-            <Text style={styles.titleInfo}>E-mail:</Text>
-            <TextInput style={styles.textInput} value={dados.email} />
-
-            <Text style={styles.titleInfo}>Telefone:</Text>
-            <TextInput style={styles.textInput} value={dados.telefone} />
+            <TextInput style={styles.textInput} value={dados.nome} placeholder="Nome" />
+            <TextInput style={styles.textInput} value={dados.cpf} placeholder="CPF" />
+            <TextInput style={styles.textInput} value={dados.genero} placeholder="Gênero" />
+            <TextInput style={styles.textInput} value={dados.data_nasc} placeholder="Data de Nasc." />
+            <TextInput style={styles.textInput} value={dados.email} placeholder="E-mail" />
+            <TextInput style={styles.textInput} value={dados.telefone} placeholder="Telefone" />
 
             <TouchableOpacity style={styles.button} onPress={handleInserirDados}>
               <Text style={styles.buttonText}>Inserir no Banco de Dados</Text>
             </TouchableOpacity>
           </View>
         ) : (
-          <Text>Nenhum arquivo selecionado</Text>
+          <Text style={styles.placeholderText}>Nenhum arquivo selecionado</Text>
         )}
       </View>
     </View>
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f0f8ff', // Azul ciano claro
     alignItems: 'center',
     justifyContent: 'center',
   },
   containerLargura: {
     width: '95%',
-    justifyContent: 'center',
+    alignItems: 'center',
   },
   titleConteudo: {
-    fontSize: 20,
+    fontSize: 24, // Tamanho aumentado
     fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#4096F7', // Azul ciano
   },
   textInput: {
+    width: '100%',
     height: 45,
     padding: 10,
-    fontSize: 16,
+    fontSize: 18, // Tamanho aumentado
     marginBottom: 10,
-    fontWeight: '600',
-    color: '#4054F7',
+    color: '#333', // Cor escura
     borderWidth: 1,
-    borderColor: '#4D95F7',
+    borderColor: '#4096F7', // Azul ciano
     borderRadius: 8,
-  },
-  titleInfo: {
-    fontWeight: 'bold',
-    fontSize: 20,
-    marginBottom: 10,
-    color: '#4096F7',
   },
   button: {
     justifyContent: 'center',
-    flexDirection: 'row',
+    alignItems: 'center',
     height: 45,
     backgroundColor: "#4096F7",
     borderRadius: 8,
@@ -155,11 +134,23 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: 22,
+    fontSize: 18, // Tamanho aumentado
     fontWeight: 'bold',
+  },
+  placeholderText: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 18, // Tamanho aumentado
+    color: '#666',
   },
   topo:{
     alignItems:'center',
     justifyContent:'center',
-  }
+    marginBottom: 20,
+  },
+  errorMessage: {
+    textAlign: 'center',
+    color: 'red',
+    marginBottom: 10,
+  },
 });
