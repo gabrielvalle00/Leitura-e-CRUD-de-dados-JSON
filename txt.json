@@ -2,7 +2,7 @@
 {
     "nome": "Napoleão Bonaparte",
     "cpf": "12345678901",
-          "data_nasc": "12/05/1995",
+    "data_nasc": "12/05/1995",
     "genero": "M",
     "estado_civil": "casado",
     "email": "napoleão@example.com",

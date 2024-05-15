@@ -7,10 +7,11 @@ const clienteController = {
             const { nome, cpf, data_nasc, sexo, estado_civil, email, telefone } = req.body;
 
             
-            const cpfExistente = await verificarCpfExistente(cpf);
+            cpfExistente = await verificarCpfExistente(cpf);
             if (cpfExistente > 0) {
-                return res.json({ error: 'CPF já possui cadastro' });
+                return res.json(`O CPF: ${cpf} já possui cadastro`);
             }
+            cpfExistente = null;
 
             
             const objCliente = new Cliente(null, nome, data_nasc, cpf, sexo, estado_civil, email, telefone);
